@@ -1,0 +1,78 @@
+---
+title: "Portfolio Project"
+format:
+  html:
+    self-contained: true
+editor: visual
+---
+
+# Unemployment Rate in London Over Time
+
+## Context & Question
+
+This visualization shows how the unemployment rate in London changes over years and across months.
+
+The goal is to identify long-term trends, seasonal patterns, and major economic shocks for the labour market.
+
+## Design Decisions
+
+A heatmap is used to display unemployment rates across two time dimensions: year and month.
+
+Color intensity encodes the unemployment rate, allowing quick comparison across periods.
+
+This design highlights patterns effectively, though it does not show individual borough differences.
+
+We could use a line chart as an effective tool for representing time patterns, but heatmap is more usefull for considering two time dimensions.
+
+## Key Insights
+
+Unemployment rates decline steadily after the early 2010s, indicating improving labor market conditions.
+
+A clear spike appears around the COVID-19 period, representing the strongest increase in unemployment.
+
+Seasonal variation is present, but it is smaller than the impact of major economic shocks.
+
+```{r}
+#| echo: false
+#| message: FALSE
+#| warning: FALSE
+
+library(tidyverse)
+library(lubridate)
+library(scales)
+library(plotly)
+
+df <- read_csv(
+  "C:/Users/msobc/OneDrive/Документи/KSE_study/data vis basics/portfolio/unemployment-rate.csv"
+) %>%
+  mutate(
+    date = ymd(date),
+    unemployment_rate = as.numeric(unemployment_rate),
+    year = year(date),
+    month = month(date, label = TRUE, abbr = TRUE),
+    hover = paste0(
+      "Year: ", year,
+      "<br>Month: ", month,
+      "<br>Unemployment rate: ", round(unemployment_rate, 2), "%"
+    )
+  )
+
+fig <- ggplot(df, aes(x = year, y = month, fill = unemployment_rate, text = hover)) +
+  geom_tile(color = "white", linewidth = 0.2) +
+  scale_fill_viridis_c(
+    name = "Unemployment rate (%)",
+    labels = percent_format(scale = 1)) +
+  labs(
+    title = "Unemployment Rate in London Over Time",
+    subtitle = "Heatmap by month and year highlights seasonal patterns and shocks",
+    x = "Year",
+    y = "Month"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(panel.grid = element_blank())
+
+ggplotly(fig, tooltip = "text")
+
+```
+
+**Data source:** [GitHub – London Unemployment](https://github.com/datasets/london-unemployment/blob/main/data/data/unemployment-rate.csv)

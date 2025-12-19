@@ -1,0 +1,107 @@
+<!-- Chart 5 -->
+<article>
+    <html>
+<head>
+  <meta charset="utf-8">
+
+  <script src="https://cdn.jsdelivr.net/npm/vega@6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+</head>
+  <header>
+    <h2>Chart 5: London Housing Density by Year and Price</h2>
+
+    <p>
+      <strong>Context & Question.</strong>
+      This visualization shows how London housing records are distributed across years and prices,
+      and how crime levels vary across these segments.
+    </p>
+
+    <p>
+      <strong>Design.</strong>
+      A binned bubble chart is used to reduce clutter. The x-axis shows year, the y-axis shows average price,
+      bubble size represents the number of records, and color shows the mean number of crimes. 
+      This approach  helps show many information in one chart.
+    </p>
+
+    <p>
+      <strong>Key Insights.</strong>
+      Lower price segments become less dominant over time, while mid-price ranges attract more activity in later years.
+      Higher crime levels are more visible in certain mid-to-high price bins rather than only in the lowest price ranges.
+    </p>
+  </header>
+
+  <div id="vis5"></div>
+
+  <p>
+    <small>
+      Data source:
+      <a href="https://www.kaggle.com/datasets/ankitsen910/london-housing-data" target="_blank">
+        Kaggle-London Housing Data
+      </a>
+    </small>
+  </p>
+
+  <script type="text/javascript">
+  var chart5 = {
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "width": 550,
+    "height": 490,
+    "data": {
+      "url": "https://raw.githubusercontent.com/Marichka2888/london/main/5.%20London%20Housing%20Data.csv",
+      "format": {"type": "csv"}
+    },
+    "transform": [
+      {"calculate": "toDate(datum.date)", "as": "date_new"},
+      {"calculate": "year(datum.date_new)", "as": "year_num"},
+      {"calculate": "toNumber(datum.average_price)", "as": "avg_price"},
+      {"calculate": "toNumber(datum.no_of_crimes)", "as": "crimes"},
+      {"filter": "isValid(datum.avg_price) && isValid(datum.year_num)"}
+    ],
+    "mark": {"type": "circle", "opacity": 0.8},
+    "encoding": {
+      "x": {
+        "field": "year_num",
+        "type": "quantitative",
+        "bin": {"maxbins": 30},
+        "title": "Year",
+        "axis": {"format": "d"}
+      },
+      "y": {
+        "field": "avg_price",
+        "type": "quantitative",
+        "bin": {"maxbins": 25},
+        "title": "Average Price"
+      },
+      "size": {
+        "aggregate": "count",
+        "type": "quantitative",
+        "scale": {"range": [70, 500]},
+        "legend": {"title": "Count of Records"}
+      },
+      "color": {
+        "aggregate": "mean",
+        "field": "crimes",
+        "type": "quantitative",
+        "scale": {"domain": [0, 6000], "scheme": "blues"},
+        "legend": {"title": "Crimes (mean)"}
+      },
+      "tooltip": [
+        {"field": "year_num", "type": "quantitative", "bin": true, "title": "Year"},
+        {"field": "avg_price", "type": "quantitative", "bin": true, "title": "Price"},
+        {"aggregate": "count", "type": "quantitative", "title": "Count of Records"},
+        {"aggregate": "mean","field": "crimes","type": "quantitative","title": "Crimes (mean)","format": ".2f"}
+      ]
+    },
+    "title": "Distribution of London Housing by Year and Price"
+  };
+
+  vegaEmbed("#vis5", chart5, { actions: false })
+    .then(() => console.log("Chart 5 rendered"))
+    .catch(err => {
+      console.error("Chart 5 failed:", err);
+      document.querySelector("#vis5").innerHTML =
+        "<p style='color:red;'><strong>Chart failed to render.</strong> Open DevTools → Console to see the error.</p>";
+    });
+</script>
+

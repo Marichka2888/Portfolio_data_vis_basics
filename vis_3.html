@@ -1,0 +1,83 @@
+<!-- Chart 4: Tableau Public -->
+<article>
+     <html>
+<head>
+  <meta charset="utf-8">
+
+  <script src="https://cdn.jsdelivr.net/npm/vega@6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+</head>
+  <header>
+    <h2>Public Transport Journeys in London </h2>
+
+    <p>
+      <strong>Context & Question.</strong>
+      This visualization examines how the number of different public transport journeys in London changes over time.
+      The goal is to understand long-term usage trends and how transport compares across years.
+    </p>
+
+    <p>
+      <strong>Design.</strong>
+      A bar chart is used to show yearly journey volumes clearly, while a dashed line highlights the year-to-year trend.
+      Bar height represents journeys, and color encodes total public transport journeys to provide broader context.
+      This approach balances clarity and context.
+    </p>
+
+    <p>
+      <strong>Key Insights.</strong>
+      Despite differences across transport modes, the sharpest decline in journeys occurs during the COVID-19 period.
+      Cable cars are consistently the least used mode of public transport, while buses account for the highest number of journeys.
+      This highlights both the unequal popularity of transport modes and the strong impact of external shocks on mobility demand.
+    </p>
+  </header>
+
+<div class="tableauPlaceholder" id="viz1766111258896" style="position: relative; width: 100%;">
+
+  <noscript>
+    <a href="#">
+      <img
+        src="https://public.tableau.com/static/images/Po/Portfoliovisualizations/Sheet1/1_rss.png"
+        alt="Number of Public Transport Journeys in London by Year"
+        style="border: none; width: 100%;"
+      />
+    </a>
+  </noscript>
+
+  <object class="tableauViz" style="display: none;">
+    <param name="host_url" value="https%3A%2F%2Fpublic.tableau.com%2F" />
+    <param name="embed_code_version" value="3" />
+    <param name="site_root" value="" />
+    <param name="name" value="Portfoliovisualizations/Sheet1" />
+    <param name="tabs" value="no" />
+    <param name="toolbar" value="yes" />
+    <param name="animate_transition" value="yes" />
+    <param name="display_static_image" value="yes" />
+    <param name="display_spinner" value="yes" />
+    <param name="display_overlay" value="yes" />
+    <param name="display_count" value="yes" />
+    <param name="language" value="en-US" />
+  </object>
+</div>
+
+<script type="text/javascript">
+  const container2 = document.getElementById("viz1766111258896");
+  const viz2 = container2.getElementsByTagName("object")[0];
+
+  viz2.style.width = "100%";
+  viz2.style.height = container2.offsetWidth * 0.75 + "px";
+
+  const script2 = document.createElement("script");
+  script2.src = "https://public.tableau.com/javascripts/api/viz_v1.js";
+  viz2.parentNode.insertBefore(script2, viz2);
+</script>
+
+  <p>
+    <small>
+      Data source:
+      <a href="https://github.com/datasets/london-transport/blob/main/data/data/public-transport-journeys.csv" target="_blank">
+        github - london-transport
+      </a>
+    </small>
+  </p>
+</article>

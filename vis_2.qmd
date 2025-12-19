@@ -1,0 +1,102 @@
+---
+title: "London Life Expectancy Over Time (Average across boroughs)"
+format:
+  html:
+    self-contained: true
+engine: jupyter
+jupyter: python3
+execute:
+  echo: true
+---
+
+## Context & Question
+
+This visualization shows how life expectancy in London has changed over time for males and females.
+
+The main question is how overall life expectancy evolves and whether the gender gap changes over time.
+
+## Design Decisions
+
+A line chart is used to highlight trends over time clearly.
+
+Separate lines represent male and female life expectancy, while the shaded area shows the gender gap between them.
+
+This design makes long-term trends and differences easy to compare.
+
+## Key Insights
+
+Life expectancy increases steadily for both males and females over the entire period.
+
+Females consistently live longer than males, and the gender gap remains present but relatively stable over time.
+
+The overall upward trend suggests general improvements in health and living conditions in London.
+
+```{python}
+#| echo: false
+import pandas as pd
+import numpy as np
+import plotly.graph_objects as go
+
+female = "female-life-expectancy.csv"
+male = "male-life-expectancy.csv"
+
+def load_with_gender(path: str, gender: str) -> pd.DataFrame:
+    df = pd.read_csv(path)
+    df["Year"] = pd.to_datetime(df["Year"]).dt.year
+    df["Value"] = pd.to_numeric(df["Value"])
+    df["Gender"] = gender
+    df = df[["Area code", "Local Authority", "Year", "Value", "Gender"]]
+    df = df.dropna(subset=["Year", "Value"])
+    return df
+
+female = load_with_gender(female, "Female")
+male   = load_with_gender(male, "Male")
+
+df = pd.concat([female, male], ignore_index=True)
+
+grouped_by_year = (df.groupby(["Year", "Gender"], as_index=False)["Value"].mean().sort_values("Year"))
+
+wide = grouped_by_year.pivot(index="Year", columns="Gender", values="Value").reset_index()
+
+fig = go.Figure()
+
+fig.add_trace(go.Scatter(
+    x=wide["Year"],
+    y=wide["Female"],
+    mode="lines+markers",
+    name="Female",
+    hovertemplate="Year: %{x}<br>Female life expectancy: %{y:.2f} years<extra></extra>"
+))
+
+fig.add_trace(go.Scatter(
+    x=wide["Year"],
+    y=wide["Male"],
+    mode="lines+markers",
+    name="Male",
+    hovertemplate="Year: %{x}<br>Male life expectancy: %{y:.2f} years<extra></extra>"
+))
+
+fig.add_trace(go.Scatter(
+    x=list(wide["Year"]) + list(wide["Year"][::-1]),
+    y=list(wide["Female"]) + list(wide["Male"][::-1]),
+    fill="toself",
+    name="Gender gap (Female - Male)",
+    opacity=0.25,
+    line=dict(width=0),
+    hoverinfo="none",
+    showlegend=True
+))
+
+fig.update_layout(
+    title="London Life Expectancy Over Time (Average across boroughs)",
+    xaxis_title="Year",
+    yaxis_title="Life expectancy (years)",
+    hovermode="x unified",
+    template="plotly_white"
+)
+
+fig
+
+```
+
+Data source: [Github - london-life-expectancy](https://github.com/datasets/london-life-expectancy/tree/main/data)
